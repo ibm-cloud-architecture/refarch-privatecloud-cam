@@ -15,5 +15,16 @@ cd refarch-privatecloud-applications
 
 * Run the script `deploy_cam.sh`
 
+* You will see a message similar to this one at the end:
+
+```
+================
+Congratulations!
+CAM is available at https://<PROXY_IP>:30000
+user:testuser, pwd: testuser
+Have fun!
+```
+
+
 
 
