@@ -1,0 +1,28 @@
+###############################################################################
+# Licensed Materials - Property of IBM.
+# Copyright IBM Corporation 2017. All Rights Reserved.
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+# Contributors:
+#  IBM Corporation - initial API and implementation
+###############################################################################
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: cam-portal-ui
+  labels:
+    name: cam-portal-ui
+  namespace: {{ .Values.service.namespace }}
+spec:
+  #type: NodePort
+  ports:
+  - port: 39002
+    targetPort: 39002
+    nodePort:
+  selector:
+    name: cam-portal-ui

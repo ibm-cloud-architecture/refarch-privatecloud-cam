@@ -1,0 +1,46 @@
+###############################################################################
+# Licensed Materials - Property of IBM.
+# Copyright IBM Corporation 2017. All Rights Reserved.
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+# Contributors:
+#  IBM Corporation - initial API and implementation
+###############################################################################
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cam-mongo
+  labels:
+    name: cam-mongo
+  namespace: {{ .Values.service.namespace }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: cam-mongo
+    spec:
+      hostname: cam-mongo
+      volumes:
+      - name: {{ .Values.cam_mongo_nfs.name }}
+      {{- if .Values.cam_mongo_nfs.persistence.enabled }}
+        persistentVolumeClaim:
+        {{- if .Values.cam_mongo_nfs.persistence.existingClaimName }}
+          claimName: {{ .Values.cam_mongo_nfs.persistence.existingClaimName }}
+        {{- else }}
+          claimName: {{ .Values.cam_mongo_nfs.name }}
+        {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      containers:
+      - name: cam-mongo
+        image: mongo:3.4.4
+        ports:
+        - name: mongo
+          containerPort: 27017
+        volumeMounts:
+          - name: "{{ .Values.cam_mongo_nfs.name }}"
+            mountPath: /data/db

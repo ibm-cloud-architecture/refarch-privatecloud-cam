@@ -1,0 +1,16 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: cam-logs-nfs
+  namespace: cam
+  labels:
+    use: cam-log
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    -  ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    server: fsf-wdc0401d-fz.service.softlayer.com
+    path: /IBM02SV625675_2/data01/d-10

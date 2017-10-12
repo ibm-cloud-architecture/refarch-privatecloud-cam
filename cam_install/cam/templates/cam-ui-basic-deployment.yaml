@@ -1,0 +1,200 @@
+###############################################################################
+# Licensed Materials - Property of IBM.
+# Copyright IBM Corporation 2017. All Rights Reserved.
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+# Contributors:
+#  IBM Corporation - initial API and implementation
+###############################################################################
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: cam-ui-basic
+  labels:
+    name: cam-ui-basic
+  namespace: {{ .Values.service.namespace }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: cam-ui-basic
+    spec:
+      hostname: cam-ui-basic
+      volumes:
+      - name:  {{ .Values.cam_logs_nfs.name }}
+      {{- if .Values.cam_logs_nfs.persistence.enabled }}
+        persistentVolumeClaim:
+        {{- if .Values.cam_logs_nfs.persistence.existingClaimName }}
+          claimName: {{ .Values.cam_logs_nfs.persistence.existingClaimName }}
+        {{- else }}
+          claimName:  {{ .Values.cam_logs_nfs.name }}
+        {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      imagePullSecrets:
+      - name: {{ .Values.image.secret }}
+      containers:
+      - name: cam-ui-basic
+        image: "{{ .Values.image.repository }}/orpheus-ui-basic:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 39002
+        volumeMounts:
+          - name:  {{ .Values.cam_logs_nfs.name }}
+            mountPath: /var/log
+            subPath: cam-ui-basic
+        env:
+        - name: APP_CONTEXT
+          value: /ui
+        - name: NODE_ENV
+          value: orpheus
+        - name: BROKER_MODE
+          value: "true"
+        - name: appSpace
+          value: opsconsole
+        - name: cfDomain
+          value: stage1.ng.bluemix.net
+        - name: APP_TAXONOMY
+          value: cam
+        - name: bluemixHost
+          value: stage1.ng.bluemix.net
+        - name: LOG4JS_LEVEL
+          value: DEBUG
+        - name: sessionCacheName
+          value: Redis_Server
+        - name: sessionKey
+          value: opsConsole.sid
+        - name: sessionSecret
+          value: 5461697E8FF2D5C596A72316DA3B451D
+        - name: uaaClientId
+          value: pattern_engine_id
+        - name: uaaClientSecret
+          value: tp4MBNwMM2
+        - name: uaaCallbackUrl
+          value: http://localhost:3000/cam/ui/auth/bluemix/callback
+        - name: ACE_COMMON_URL
+          value: https://ace-common-opsconsoledev.stage1.ng.bluemix.net
+        - name: ACE_DOMAIN
+          value: stage1.ng.bluemix.net
+        - name: RESILIENCY_CACHENAME
+          value: cam-ui-cloudant-dev
+        - name: Redis_Server
+          value: '{"credentials":{"password":"","host":"redis","port":"6379","username":"redis"}}'
+        - name: IDENTITY_COOKIE_PROPERTY
+          value: com.ibm.bluemix.login.Identity.yp
+        - name: DB_URL
+          value: mongodb://cam-mongo:27017/cam
+        - name: IAAS_URL
+          value: http://cam-iaas:4000/api/v1/
+        - name: CATALOG_API_URL
+          value: http://cam-catalog:4100/api/v1/
+        - name: DISABLE_CSRF_AUTHENTICATION
+          value: "true"
+        - name: TENANT_MGMT_SERVICE_URL
+          value: http://cam-tenant-api:4500/api/v1/
+        - name: TENANT_MGMT_SERVICE_TOKEN
+          value: "12345678901234567890"
+        - name: CAM_TOKEN
+          value: "12345678901234567890"
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_HOST
+          value: redis
+        - name: APP_ROOT
+          value: /usr/src/app
+        - name: ORPHEUS_MODE
+          value: "true"
+        - name: USERVICES_PATH
+          value: cam
+        - name: CONTAINER_SCHEME
+          value: http
+        - name: A8_REGISTER
+          value: "true"
+        - name: A8_CONTROLLER_URL
+          value: http://a8-controller:8080
+        - name: A8_REGISTRY_URL
+          value: http://a8-registry:8080
+        - name: A8_PROXY
+          value: "true"
+        - name: CONSOLE_URL
+          value: http://localhost:30000
+        - name: PROXY_PORT
+          value: "30000"
+        - name: API_NODE_ENV
+          value: orpheus
+        - name: PROXY_NODE_ENV
+          value: orpheus
+        - name: DOCS_URL
+          value: https://console.bluemix.net/docs/services/CloudAutomationManager
+        - name: SERVICE_INSTANCE_URL
+          value: https://api.stage1.ng.bluemix.net/v2/service_instances/
+        - name: PREVIEW
+          value: "true"
+        - name: CAM_TENANT_MGMT_TOKEN
+          value: "12345678901234567890"
+        - name: CAM_ADMIN_USER
+          value: bluemix.cam_user@cam.com
+        - name: ORG_GUID
+          value: dummy-org-id
+        - name: SPACE_GUID
+          value: dummy-space-id
+        - name: SERVICE_ID
+          value: dummy-service-id
+        - name: ORPHEUS_HOST_URL
+          value: http://localhost:3000
+        - name: ORPHEUS_AUTH_URL
+          value: http://cam-ui-basic:39002
+        - name: ORPHEUS_IDENTITY_API_URL
+          value: http://cam-identity-mgmt:4300
+        - name: ORPHEUS_UI_URL
+          value: http://cam-ui-basic:39002
+        - name: ORPHEUS_TENANT_URL
+          value: http://cam-tenant-api:4500
+        - name: ORPHEUS_TENANT_URL
+          value: http://cam-tenant-api:4500
+        - name: ORPHEUS_LEFTNAV_URL
+          value: http://cam-leftnav:39012
+        - name: ORPHEUS_UI_CATALOG_URL
+          value: http://cam-ui-catalog:39006
+        - name: ORPHEUS_UI_INSTANCE_URL
+          value: http://cam-ui-instances:39008
+        - name: ORPHEUS_UI_CONNECTION_URL
+          value: http://cam-ui-connections:39010
+        - name: ORPHEUS_IAAS_URL
+          value: http://cam-iaas:4000
+        - name: ORPHEUS_PROXY_URL
+          value: https://cam-proxy:30000
+        - name: ORPHEUS_CATALOG_API_URL
+          value: http://cam-catalog:4100
+        - name: ORPHEUS_UI_TEMPLATE_URL
+          value: http://cam-ui-templates:39004
+        - name: DEPLOYMENT_MODE
+          value: orpheus
+        - name: ORPHEUS_IDENTITY_URL
+          value: http://cam-identity-mgmt:4300
+        - name: ORPHEUS_IDENTITY_URL
+          value: https://{{ .Values.host.ip }}:30000/cam
+        - name: ORPHEUS_PROXY_URL
+          value: https://cam-proxy:30000
+        - name: wlpClientId
+          value: oskUXyJ3Q1qY7vUA
+        - name: wlpClientSecret
+          value: 2KbHOQDpu9oFvMCd
+        - name: wlp_scope
+          value: openid+profile+email
+        - name: wlpCallbackUrl
+          value: https://{{ .Values.host.ip }}:30000/auth/liberty/callback
+        - name: CUSTOM_HEADER
+          value: "true"
+        - name: disableSectionIds
+          value: '["monitor","servicecomposer"]'
+      initContainers:
+      - name: init-redis
+        image: busybox
+        command: ['sh', '-c', 'until nslookup redis; do echo waiting for redis; sleep 2; done; until nslookup cam-mongo; do echo waiting for cam-mongo; sleep 2; done; sleep 120;']

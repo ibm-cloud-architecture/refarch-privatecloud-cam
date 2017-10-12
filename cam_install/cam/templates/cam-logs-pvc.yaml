@@ -1,0 +1,35 @@
+###############################################################################
+# Licensed Materials - Property of IBM.
+# Copyright IBM Corporation 2017. All Rights Reserved.
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+# Contributors:
+#  IBM Corporation - initial API and implementation
+###############################################################################
+
+## Conditionally create second PersistentVolumeClaim based on persistence setting
+  {{ if and .Values.cam_logs_nfs.persistence.enabled (not .Values.cam_logs_nfs.persistence.existingClaimName) -}}
+  kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name:  {{ .Values.cam_logs_nfs.name }}
+    labels:
+      app: {{ template "fullname" . }}
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      release: "{{ .Release.Name }}"
+      heritage: "{{ .Release.Service }}"
+    namespace: {{ .Values.service.namespace }}
+  spec:
+    {{- if .Values.cam_logs_nfs.persistence.storageClassName }}
+    storageClassName: {{ .Values.cam_logs_nfs.persistence.storageClassName | quote }}
+    {{- end }}
+    accessModes:
+      - {{ .Values.cam_logs_nfs.persistence.accessMode | quote }}
+    resources:
+      requests:
+        storage: {{ .Values.cam_logs_nfs.persistence.size | quote }}
+    selector:
+      matchLabels:
+        use: cam-log
+  {{- end }}

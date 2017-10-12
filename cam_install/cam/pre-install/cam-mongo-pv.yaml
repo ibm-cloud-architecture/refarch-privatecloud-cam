@@ -1,0 +1,15 @@
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: cam-mongo-nfs
+  namespace: cam
+spec:
+  capacity:
+    storage: 15Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  nfs:
+    server: fsf-wdc0401d-fz.service.softlayer.com
+    path: /IBM02SV625675_2/data01/d-11

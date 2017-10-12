@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-log-dirs
+spec:
+  template:
+    metadata:
+      name: create-log-dirs
+    spec:
+      containers:
+      - name: create-log-dirs
+        image: patrocinio/cam_create_logs
+        volumeMounts:
+        - name: cam-log
+          mountPath: /CAM_logs
+      volumes:
+      - name: cam-log
+        persistentVolumeClaim: 
+          claimName: cam-logs-nfs
+      restartPolicy: Never

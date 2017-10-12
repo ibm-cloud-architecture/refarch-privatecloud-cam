@@ -1,0 +1,62 @@
+###############################################################################
+# Licensed Materials - Property of IBM.
+# Copyright IBM Corporation 2017. All Rights Reserved.
+# U.S. Government Users Restricted Rights - Use, duplication or disclosure
+# restricted by GSA ADP Schedule Contract with IBM Corp.
+#
+# Contributors:
+#  IBM Corporation - initial API and implementation
+###############################################################################
+service:
+  namespace: cam
+
+image:
+  repository: ibmcom
+  tag: 2.1.0-beta-1
+  pullPolicy: Always
+
+cam_mongo_nfs:
+  name: "cam-mongo-nfs"
+  persistence:
+    enabled: true
+
+    ## Specify the name of the Existing Claim to be used by your application
+    ## empty string means don't use an existClaim
+    existingClaimName: ""
+
+    ## Specify the name of the StorageClass
+    ## empty string means don't use a StorageClass
+    storageClassName: ""
+
+    accessMode: ReadWriteMany
+
+    size: 15Gi
+
+cam_logs_nfs:
+  name: "cam-logs-nfs"
+  persistence:
+    enabled: true
+
+    ## Specify the name of the Existing Claim to be used by your application
+    ## empty string means don't use an existClaim
+    existingClaimName: "cam-logs-nfs"
+
+    ## Specify the name of the StorageClass
+    ## empty string means don't use a StorageClass
+    storageClassName: ""
+
+    accessMode: ReadWriteMany
+
+    size: 10Gi
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteMany
+  size: 15Gi
+
+license: "not accepted"
+
+# The host IP of the kube master
+host:
+  ip: localhost
+
