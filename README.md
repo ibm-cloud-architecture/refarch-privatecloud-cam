@@ -11,6 +11,27 @@ git clone https://github.com/patrocinio/refarch-privatecloud-applications.git
 cd refarch-privatecloud-applications
 ```
 
+* Then define the variable PROXY_IP according to your environment:
+
+```
+export PROXY_IP=<your proxy IP>
+```
+
+## Deploy LDAP
+
+Before we install CAM, we need to install an LDAP server:
+
+* Run the script `deploy_ldap.sh`
+
+* You will see a message like this at the end:
+
+```
+LDAP admin available at http://169.55.86.200:31080/
+user: cn=admin,dc=local,dc=io, pwd: admin
+```
+
+## Deploy CAM
+
 * Edit the file `deploy_cam.sh` to change the variable `PROXY_IP` according to your environment
 
 * Run the script `deploy_cam.sh`

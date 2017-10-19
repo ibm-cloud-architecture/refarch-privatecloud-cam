@@ -1,24 +1,7 @@
-PROXY_IP=169.45.207.217
-
-function create_log_pv {
-	echo Creating log PV
-	kubectl delete pv d-10	
-	kubectl delete pv cam-logs-nfs
-	kubectl create -f cam_install/cam/pre-install/cam-logs-pv.yaml 
-}
-
-function create_db_pv {
-	echo Creating DB PV
-	kubectl delete pv d-11
-	kubectl delete pv cam-mongo-nfs
-	kubectl create -f cam_install/cam/pre-install/cam-mongo-pv.yaml 
-}
-
 function delete_log_pvc {
 	echo Deleting log PVC
 	kubectl delete pvc cam-logs-nfs
 }
-
 
 function create_log_pvc {
 	echo Deleting PVC
@@ -77,14 +60,10 @@ function display_message {
 
 ./create_namespace.sh cam 
 
-# No need to create specific PVs
-## create_log_pv
-## create_db_pv
-
-create_log_pvc
-deploy_create_log_dirs
-wait_for_create_dirs_completion
-deploy_cam
+#create_log_pvc
+#deploy_create_log_dirs
+#wait_for_create_dirs_completion
+#deploy_cam
 wait_for_deployments
 onboard_cam
 display_message

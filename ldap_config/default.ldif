@@ -1,0 +1,25 @@
+dn: ou=people,dc=local,dc=io
+objectClass: organizationalUnit
+description: All people in organization
+ou: people
+
+dn: ou=groups,dc=local,dc=io
+objectClass: organizationalUnit
+objectClass: top
+ou: groups
+
+dn: uid=testuser,ou=people,dc=local,dc=io
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: testUserCN
+sn: testUserSN
+uid: testuser
+userPassword: testuser
+
+dn: cn=orpheus,ou=groups,dc=local,dc=io
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: orpheus
+uniquemember: uid=testuser,ou=people,dc=local,dc=io
