@@ -33,11 +33,11 @@ function deploy_cam {
 }
 
 function wait_for_deployments {
-	kubectl get deploy |grep cam- | awk '{print $4}' | grep -v 1
+	kubectl get deploy |grep cam- | awk '{print $5}' | grep -v 1 > /dev/null
 	while [ $? == 0 ]
 	do
 		echo Waiting for deployments to complete
-		kubectl get deploy |grep cam- | awk '{print $4}' | grep -v 1
+		kubectl get deploy |grep cam- | awk '{print $5}' | grep -v 1 > /dev/null
 	done
 }
 
@@ -46,7 +46,7 @@ function onboard_cam {
 }
 
 function load_contents {
-	kubectl exec -n cam $(kubectl get -n cam pods | grep proxy | sed 's/[ ].*//g') \
+	kubectl exec $(kubectl get pods | grep proxy | sed 's/[ ].*//g') \
 	/usr/src/app/camlibrary/importTemplatesToCatalog.sh $PROXY_IP testuser testuser
 }
 
@@ -60,13 +60,11 @@ function display_message {
 
 ./create_namespace.sh cam 
 
-#create_log_pvc
-#deploy_create_log_dirs
-#wait_for_create_dirs_completion
-#deploy_cam
+create_log_pvc
+deploy_create_log_dirs
+wait_for_create_dirs_completion
+deploy_cam
 wait_for_deployments
 onboard_cam
+load_contents
 display_message
-
-# No need to load contents
-## load_contents

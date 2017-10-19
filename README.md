@@ -32,8 +32,6 @@ user: cn=admin,dc=local,dc=io, pwd: admin
 
 ## Deploy CAM
 
-* Edit the file `deploy_cam.sh` to change the variable `PROXY_IP` according to your environment
-
 * Run the script `deploy_cam.sh`
 
 * You will see a message similar to this one at the end:
