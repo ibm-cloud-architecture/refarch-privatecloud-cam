@@ -1,7 +1,16 @@
 function deploy_ldap {
 	echo Deploying LDAP chart
 	helm repo add cnct http://atlas.cnct.io
+#	helm delete --purge ldap
 	helm install --name ldap cnct/openldap
+}
+
+function wait_for_available {
+	while [ $(kubectl get deploy | grep -v admin | awk '{print $5}') -eq 0 ]
+	do
+		echo Waiting for LDAP server...
+		sleep 1
+	done
 }
 
 ./create_namespace.sh ldap
