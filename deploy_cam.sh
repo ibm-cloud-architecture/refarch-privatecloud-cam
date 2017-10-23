@@ -11,10 +11,13 @@ function create_log_pvc {
 }
 
 function wait_for_create_dirs_completion {
+	declare -i count
+	count=0
 	while [ $(kubectl get job | grep create-log-dirs | awk '{print $3}') -ne "1" ]
 	do
-		echo Waiting for create dirs job
+		echo "Waiting for create dirs job... $count"
 		sleep 1
+		count=count+1
 	done
 }
 
@@ -33,11 +36,13 @@ function deploy_cam {
 }
 
 function wait_for_deployments {
-	kubectl get deploy |grep cam- | awk '{print $5}' | grep -v 1 > /dev/null
-	while [ $? == 0 ]
+	declare -i count
+	count=0
+	while [ $(kubectl get deploy |grep cam- | awk '{print $5}' | grep -v 1 | wc -c) -ne "0" ]
 	do
-		echo Waiting for deployments to complete
-		kubectl get deploy |grep cam- | awk '{print $5}' | grep -v 1 > /dev/null
+		echo Waiting for deployments to complete... $count
+		sleep 1
+		count=count+1
 	done
 }
 

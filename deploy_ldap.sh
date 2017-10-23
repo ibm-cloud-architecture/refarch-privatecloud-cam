@@ -6,7 +6,7 @@ function deploy_ldap {
 }
 
 function wait_for_available {
-	while [ $(kubectl get deploy | grep -v admin | awk '{print $5}') -eq 0 ]
+	while [ $(kubectl get deploy | grep -v admin | awk '{print $5}') -ne "1" ]
 	do
 		echo Waiting for LDAP server...
 		sleep 1
